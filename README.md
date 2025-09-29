@@ -10,6 +10,7 @@ This is a lightweight Electron wrapper for [Legend of Mushroom](https://lom.joyn
 - Forces the game to think the window is always focused
 - Optional remote debugging (`--debug`)
 - Packaged installer for easy setup [Latest Release](https://github.com/J9B1/lom-wrapper/releases)
+- Discord Rich Presence integration
 
 ## Safety & Privacy
 

@@ -25,5 +25,8 @@
     "win": {
       "icon": "icon.png"
     }
+  },
+  "dependencies": {
+    "discord-rich-presence": "^0.0.8"
   }
 }

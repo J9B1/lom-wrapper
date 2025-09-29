@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
+const rpc = require("discord-rich-presence")("1422344303908491404");
 
 const WIDTH = 512;
 const HEIGHT = 911;
@@ -17,6 +18,7 @@ app.commandLine.appendSwitch("disable-renderer-backgrounding");
 app.commandLine.appendSwitch("disable-backgrounding-occluded-windows");
 
 let mainWindow;
+let startTimestamp = Math.floor(Date.now() / 1000);
 
 app.whenReady().then(() => {
   mainWindow = new BrowserWindow({
@@ -48,62 +50,65 @@ app.whenReady().then(() => {
         background-clip: padding-box;
       }
       * { background-clip: padding-box; }
+
+      #app-border {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 10px;
+        border: 4px solid #423027;
+        pointer-events: none;
+        z-index: 999999;
+      }
     `);
 
     mainWindow.webContents.executeJavaScript(`
-  (function () {
-    try {
-      Object.defineProperty(document, 'hasFocus', {
-        configurable: true,
-        get: () => true
-      });
-      Object.defineProperty(document, 'hidden', {
-        configurable: true,
-        get: () => false
-      });
-      Object.defineProperty(document, 'visibilityState', {
-        configurable: true,
-        get: () => 'visible'
-      });
-
-      const originalWindowFocus = window.focus;
-      window.focus = function () { return true; };
-
-      const shouldIgnore = (target) => {
-        return target && (
-          target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.isContentEditable
-        );
-      };
-
-      const blockEvent = (e) => {
-        if (!shouldIgnore(e.target)) {
-          e.stopImmediatePropagation();
-        }
-      };
-
-      window.addEventListener('blur', blockEvent, true);
-      window.addEventListener('visibilitychange', blockEvent, true);
-      document.addEventListener('visibilitychange', blockEvent, true);
-
-      const dispatchVisibilityEvents = () => {
+      (function () {
         try {
-          const focusEvent = new Event('focus');
-          const visibilityEvent = new Event('visibilitychange');
-          window.dispatchEvent(focusEvent);
-          document.dispatchEvent(focusEvent);
-          document.dispatchEvent(visibilityEvent);
-          window.dispatchEvent(visibilityEvent);
-        } catch (err) {}
-      };
+          if (!document.getElementById("app-border")) {
+            const border = document.createElement("div");
+            border.id = "app-border";
+            document.body.appendChild(border);
+          }
 
-      dispatchVisibilityEvents();
-      const intervalId = setInterval(dispatchVisibilityEvents, 5000);
-      window.addEventListener('beforeunload', () => clearInterval(intervalId), { once: true });
-    } catch (err) {}
-  })();
-`);
+          Object.defineProperty(document, 'hasFocus', { configurable: true, get: () => true });
+          Object.defineProperty(document, 'hidden', { configurable: true, get: () => false });
+          Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' });
+
+          window.focus = function () { return true; };
+
+          const shouldIgnore = (target) => target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+          const blockEvent = (e) => { if (!shouldIgnore(e.target)) e.stopImmediatePropagation(); };
+
+          window.addEventListener('blur', blockEvent, true);
+          window.addEventListener('visibilitychange', blockEvent, true);
+          document.addEventListener('visibilitychange', blockEvent, true);
+
+          const dispatchVisibilityEvents = () => {
+            try {
+              const focusEvent = new Event('focus');
+              const visibilityEvent = new Event('visibilitychange');
+              window.dispatchEvent(focusEvent);
+              document.dispatchEvent(focusEvent);
+              document.dispatchEvent(visibilityEvent);
+              window.dispatchEvent(visibilityEvent);
+            } catch (err) {}
+          };
+
+          dispatchVisibilityEvents();
+          const intervalId = setInterval(dispatchVisibilityEvents, 5000);
+          window.addEventListener('beforeunload', () => clearInterval(intervalId), { once: true });
+        } catch (err) {}
+      })();
+    `);
+
+    rpc.updatePresence({
+      state: "Online in Game",
+      details: "Playing Legend of Mushroom",
+      startTimestamp,
+      largeImageKey: "icon",
+      largeImageText: "Legend of Mushroom",
+      instance: false,
+    });
   });
 
   mainWindow.on("closed", () => {
