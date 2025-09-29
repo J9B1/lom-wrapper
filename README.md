@@ -1,6 +1,6 @@
 # LOM Electron Wrapper
 
-This is a lightweight Electron wrapper for [Legend of Mushroom](https://lom.joynetgame.com/). It provides a fixed-size, frameless, and rounded window while keeping user login persistent and preventing disconnects when the window loses focus.
+This is a lightweight Electron wrapper for [Legend of Mushroom](https://lom.joynetgame.com/). It provides a fixed-size, frameless, and rounded window while keeping user login persistent and preventing disconnects when the window loses focus. Making it cleaner and nicer to look at, whilst adding functionality that Bluestacks and other emulators can't provide.
 
 ## Features
 
@@ -8,9 +8,8 @@ This is a lightweight Electron wrapper for [Legend of Mushroom](https://lom.joyn
 - Frameless and transparent with slightly rounded corners
 - Persistent login/session across restarts
 - Forces the game to think the window is always focused
-- Optional remote debugging (`config.json`)
-- Custom taskbar icon
-- Packaged installer for easy setup (`installer/setup.exe`)
+- Optional remote debugging (`--debug`)
+- Packaged installer for easy setup [Latest Release](https://github.com/J9B1/lom-wrapper/releases)
 
 ## Safety & Privacy
 
@@ -18,10 +17,12 @@ This is a lightweight Electron wrapper for [Legend of Mushroom](https://lom.joyn
 - All login information is stored locally by Electron in a secure, persistent session.  
 - No data is sent to third parties or external servers.  
 - The source code is fully open on GitHub so anyone can review it.  
-- Remote debugging is optional and **disabled by default** (`config.json`).
+- Remote debugging is optional and **disabled by default** (`--debug`).
 
 ## Installation
 
-1. Run the installer at: installer/setup.exe
-2. Follow the prompts to install the wrapper.
-3. Launch the app from your Start Menu or Desktop shortcut.
+1. Download the [Latest Release](https://github.com/J9B1/lom-wrapper/releases)
+2. Run the Setup.exe
+3. Windows might show a warning, this is because it's an unknown source
+4. Follow the prompts to install the wrapper.
+5. Launch the app from your Start Menu or Desktop shortcut.
