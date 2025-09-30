@@ -5,20 +5,7 @@ const rpc = require("discord-rich-presence")("1422344303908491404");
 const WIDTH = 512;
 const HEIGHT = 911;
 
-const args = process.argv.slice(1);
-const debug = args.includes("--debug");
-
-if (debug) {
-  app.commandLine.appendSwitch("remote-debugging-port", "9222");
-  console.log("⚡ Debug mode enabled → remote debugging on port 9222");
-}
-
-app.commandLine.appendSwitch("disable-background-timer-throttling");
-app.commandLine.appendSwitch("disable-renderer-backgrounding");
-app.commandLine.appendSwitch("disable-backgrounding-occluded-windows");
-
 let mainWindow;
-let startTimestamp = Math.floor(Date.now() / 1000);
 
 app.whenReady().then(() => {
   mainWindow = new BrowserWindow({
@@ -42,6 +29,14 @@ app.whenReady().then(() => {
   mainWindow.loadURL("https://lom.joynetgame.com/");
 
   mainWindow.webContents.on("did-finish-load", () => {
+    rpc.updatePresence({
+      state: "Online in Game",
+      details: "Legend of Mushroom",
+      startTimestamp: Date.now(),
+      largeImageKey: "icon",
+      instance: false
+    });
+
     mainWindow.webContents.insertCSS(`
       html, body, canvas {
         border-radius: 10px;
@@ -50,12 +45,11 @@ app.whenReady().then(() => {
         background-clip: padding-box;
       }
       * { background-clip: padding-box; }
-
       #app-border {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
         border-radius: 10px;
-        border: 4px solid #423027;
+        border: 2px solid #04162e;
         pointer-events: none;
         z-index: 999999;
       }
@@ -69,20 +63,15 @@ app.whenReady().then(() => {
             border.id = "app-border";
             document.body.appendChild(border);
           }
-
           Object.defineProperty(document, 'hasFocus', { configurable: true, get: () => true });
           Object.defineProperty(document, 'hidden', { configurable: true, get: () => false });
           Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' });
-
           window.focus = function () { return true; };
-
           const shouldIgnore = (target) => target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
           const blockEvent = (e) => { if (!shouldIgnore(e.target)) e.stopImmediatePropagation(); };
-
           window.addEventListener('blur', blockEvent, true);
           window.addEventListener('visibilitychange', blockEvent, true);
           document.addEventListener('visibilitychange', blockEvent, true);
-
           const dispatchVisibilityEvents = () => {
             try {
               const focusEvent = new Event('focus');
@@ -93,22 +82,12 @@ app.whenReady().then(() => {
               window.dispatchEvent(visibilityEvent);
             } catch (err) {}
           };
-
           dispatchVisibilityEvents();
           const intervalId = setInterval(dispatchVisibilityEvents, 5000);
           window.addEventListener('beforeunload', () => clearInterval(intervalId), { once: true });
         } catch (err) {}
       })();
     `);
-
-    rpc.updatePresence({
-      state: "Online in Game",
-      details: "Playing Legend of Mushroom",
-      startTimestamp,
-      largeImageKey: "icon",
-      largeImageText: "Legend of Mushroom",
-      instance: false,
-    });
   });
 
   mainWindow.on("closed", () => {

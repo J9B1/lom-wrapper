@@ -1,6 +1,6 @@
 {
   "name": "lom-wrapper",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Electron wrapper for Legend of Mushroom",
   "main": "app.js",
   "scripts": {
@@ -27,6 +27,6 @@
     }
   },
   "dependencies": {
-    "discord-rich-presence": "^0.0.8"
+    "discord-rpc-electron": "^4.0.2"
   }
 }
